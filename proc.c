@@ -389,6 +389,8 @@ scheduler(void)
 
     // Loop over process table looking for process to run.
     acquire(&ptable.lock);
+    
+    #ifdef ROUND_ROBIN
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       if(p->state != RUNNABLE)
         continue;
@@ -396,6 +398,7 @@ scheduler(void)
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
+      // cprintf("Core = %d, pid = %d\n", c -> apicid, p -> pid);
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
@@ -406,7 +409,48 @@ scheduler(void)
       // Process is done running for now.
       // It should have changed its p->state before coming back.
       c->proc = 0;
+
     }
+
+    #else
+    #ifdef FCFS
+    struct proc* proc_with_min_start_time = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+
+      if(proc_with_min_start_time == 0)
+      {
+        proc_with_min_start_time = p;
+      }
+
+      else if(p -> start_time < proc_with_min_start_time -> start_time)
+      {
+        proc_with_min_start_time = p;
+      }
+    }
+
+    if(proc_with_min_start_time != 0)
+    {
+      // cprintf("Core = %d, pid = %d\n", c -> apicid, proc_with_min_start_time -> pid);
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
+      c->proc = proc_with_min_start_time;
+      switchuvm(proc_with_min_start_time);
+      proc_with_min_start_time->state = RUNNING;
+
+      swtch(&(c->scheduler), proc_with_min_start_time->context);
+      switchkvm();
+
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
+    }
+
+    #endif
+    #endif
+
     release(&ptable.lock);
 
   }
