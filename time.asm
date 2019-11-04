@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
   48:	53                   	push   %ebx
   49:	ff 33                	pushl  (%ebx)
   4b:	e8 ea 02 00 00       	call   33a <exec>
-    printf(1, "exec fail\n");
+    printf(1, "exec: fail\n");
   50:	5a                   	pop    %edx
   51:	59                   	pop    %ecx
   52:	68 b8 07 00 00       	push   $0x7b8
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     printf(1, "rtime = %d, wtime = %d\n", rtime, wtime);
   90:	ff 75 e0             	pushl  -0x20(%ebp)
   93:	ff 75 e4             	pushl  -0x1c(%ebp)
-  96:	68 c3 07 00 00       	push   $0x7c3
+  96:	68 c4 07 00 00       	push   $0x7c4
   9b:	6a 01                	push   $0x1
   9d:	e8 ae 03 00 00       	call   450 <printf>
     exit();
@@ -978,7 +978,7 @@ printf(int fd, const char *fmt, ...)
  602:	31 ff                	xor    %edi,%edi
  604:	e9 8f fe ff ff       	jmp    498 <printf+0x48>
           s = "(null)";
- 609:	bb db 07 00 00       	mov    $0x7db,%ebx
+ 609:	bb dc 07 00 00       	mov    $0x7dc,%ebx
         while(*s != 0){
  60e:	b8 28 00 00 00       	mov    $0x28,%eax
  613:	e9 72 ff ff ff       	jmp    58a <printf+0x13a>
