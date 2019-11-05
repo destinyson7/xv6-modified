@@ -5,7 +5,7 @@
 
 int main(int argc, char *argv[])
 {
-  for(int i = 0; i < 6; i++)
+  for(int i = 0; i < 100; i++)
   {
     int pid = fork();
 
@@ -18,10 +18,12 @@ int main(int argc, char *argv[])
         x/=2;
         // sleep(0.25);
       }
+      
+      exit();
     }
   }
 
-  for(int i = 0; i < 4; i++)
+  for(int i = 0; i < 100; i++)
   {
     wait();
   }
