@@ -94,6 +94,8 @@ found:
   p -> run_time = 0;        // Assignment
   p -> sleep_time = 0;      // Assignment
 
+  p -> priority = 60;       // Assignment
+
   release(&ptable.lock);
 
   // Allocate kernel stack.
@@ -448,6 +450,44 @@ scheduler(void)
       c->proc = 0;
     }
 
+    #else
+    #ifdef PBS
+
+    struct proc* proc_with_highest_priority = 0;
+    for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if(p->state != RUNNABLE)
+        continue;
+
+      if(proc_with_highest_priority == 0)
+      {
+        proc_with_highest_priority = p;
+      }
+
+      else if(p -> priority < proc_with_highest_priority -> priority)
+      {
+        proc_with_highest_priority = p;
+      }
+    }
+
+    if(proc_with_highest_priority != 0)
+    {
+      // cprintf("Core = %d, pid = %d\n", c -> apicid, proc_with_min_start_time -> pid);
+      // Switch to chosen process.  It is the process's job
+      // to release ptable.lock and then reacquire it
+      // before jumping back to us.
+      c->proc = proc_with_highest_priority;
+      switchuvm(proc_with_highest_priority);
+      proc_with_highest_priority->state = RUNNING;
+
+      swtch(&(c->scheduler), proc_with_highest_priority->context);
+      switchkvm();
+
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
+    }
+
+    #endif
     #endif
     #endif
 

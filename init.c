@@ -26,6 +26,11 @@ main(void)
   #ifdef FCFS
     printf(1, "First Come First Serve Scheduling Policy\n");
 
+  #else
+  #ifdef PBS
+    printf(1, "Priority Based Scheduling Policy\n");
+
+  #endif
   #endif
   #endif
 
