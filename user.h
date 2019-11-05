@@ -23,7 +23,8 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
-int waitx(int *wtime, int *rtime);
+int waitx(int *wtime, int *rtime);  // Assignment
+int set_priority(int pid, int priority);    // Assignment
 
 // ulib.c
 int stat(const char*, struct stat*);

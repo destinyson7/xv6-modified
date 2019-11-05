@@ -370,6 +370,31 @@ waitx(int* wtime, int* rtime)
   }
 }
 
+int
+set_priority(int pid, int priority)
+{
+  acquire(&ptable.lock);
+
+  int old_priority = -1;
+  struct proc* p;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if(p -> pid == pid)
+    {
+      old_priority = p -> priority;
+      p -> priority = priority;
+      break;
+    }
+  } 
+  
+  release(&ptable.lock);
+
+  return old_priority;
+}
+
+
+
+
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
