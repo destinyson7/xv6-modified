@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 {
   16:	8b 59 04             	mov    0x4(%ecx),%ebx
   if(argc != 3)
-  19:	74 1e                	je     39 <main+0x39>
+  19:	74 16                	je     31 <main+0x31>
   {
     printf(1, "Usage: priority <pid> <new_priority>\n");
   1b:	50                   	push   %eax
@@ -36,67 +36,64 @@ int main(int argc, char *argv[])
   22:	6a 01                	push   $0x1
   24:	e8 27 04 00 00       	call   450 <printf>
   29:	83 c4 10             	add    $0x10,%esp
-      {
         printf(1, "Old Priority of process with pid = %d was %d\n", pid, old_priority);
       }
     }
   }
-}
-  2c:	8d 65 f4             	lea    -0xc(%ebp),%esp
-  2f:	31 c0                	xor    %eax,%eax
-  31:	59                   	pop    %ecx
-  32:	5b                   	pop    %ebx
-  33:	5e                   	pop    %esi
-  34:	5d                   	pop    %ebp
-  35:	8d 61 fc             	lea    -0x4(%ecx),%esp
-  38:	c3                   	ret    
+
+  exit();
+  2c:	e8 c1 02 00 00       	call   2f2 <exit>
     pid = atoi(argv[1]);
-  39:	83 ec 0c             	sub    $0xc,%esp
-  3c:	ff 73 04             	pushl  0x4(%ebx)
-  3f:	e8 3c 02 00 00       	call   280 <atoi>
-  44:	89 c6                	mov    %eax,%esi
+  31:	83 ec 0c             	sub    $0xc,%esp
+  34:	ff 73 04             	pushl  0x4(%ebx)
+  37:	e8 44 02 00 00       	call   280 <atoi>
+  3c:	89 c6                	mov    %eax,%esi
     priority = atoi(argv[2]);
-  46:	58                   	pop    %eax
-  47:	ff 73 08             	pushl  0x8(%ebx)
-  4a:	e8 31 02 00 00       	call   280 <atoi>
+  3e:	58                   	pop    %eax
+  3f:	ff 73 08             	pushl  0x8(%ebx)
+  42:	e8 39 02 00 00       	call   280 <atoi>
     if(priority < 0 || priority > 100)
-  4f:	83 c4 10             	add    $0x10,%esp
-  52:	83 f8 64             	cmp    $0x64,%eax
-  55:	77 36                	ja     8d <main+0x8d>
+  47:	83 c4 10             	add    $0x10,%esp
+  4a:	83 f8 64             	cmp    $0x64,%eax
+  4d:	77 23                	ja     72 <main+0x72>
       int old_priority = set_priority(pid, priority);
-  57:	52                   	push   %edx
-  58:	52                   	push   %edx
-  59:	50                   	push   %eax
-  5a:	56                   	push   %esi
-  5b:	e8 3a 03 00 00       	call   39a <set_priority>
+  4f:	52                   	push   %edx
+  50:	52                   	push   %edx
+  51:	50                   	push   %eax
+  52:	56                   	push   %esi
+  53:	e8 42 03 00 00       	call   39a <set_priority>
       if(old_priority < 0)
-  60:	83 c4 10             	add    $0x10,%esp
-  63:	85 c0                	test   %eax,%eax
-  65:	78 13                	js     7a <main+0x7a>
+  58:	83 c4 10             	add    $0x10,%esp
+  5b:	85 c0                	test   %eax,%eax
+  5d:	78 26                	js     85 <main+0x85>
         printf(1, "Old Priority of process with pid = %d was %d\n", pid, old_priority);
-  67:	50                   	push   %eax
-  68:	56                   	push   %esi
-  69:	68 f8 07 00 00       	push   $0x7f8
-  6e:	6a 01                	push   $0x1
-  70:	e8 db 03 00 00       	call   450 <printf>
-  75:	83 c4 10             	add    $0x10,%esp
-  78:	eb b2                	jmp    2c <main+0x2c>
-        printf(1, "Invalid pid\n");
-  7a:	50                   	push   %eax
-  7b:	50                   	push   %eax
-  7c:	68 28 08 00 00       	push   $0x828
-  81:	6a 01                	push   $0x1
-  83:	e8 c8 03 00 00       	call   450 <printf>
-  88:	83 c4 10             	add    $0x10,%esp
-  8b:	eb 9f                	jmp    2c <main+0x2c>
+  5f:	50                   	push   %eax
+  60:	56                   	push   %esi
+  61:	68 f8 07 00 00       	push   $0x7f8
+  66:	6a 01                	push   $0x1
+  68:	e8 e3 03 00 00       	call   450 <printf>
+  6d:	83 c4 10             	add    $0x10,%esp
+  70:	eb ba                	jmp    2c <main+0x2c>
       printf(1, "Priority should be between 0 and 100\n");
-  8d:	51                   	push   %ecx
-  8e:	51                   	push   %ecx
-  8f:	68 d0 07 00 00       	push   $0x7d0
-  94:	6a 01                	push   $0x1
-  96:	e8 b5 03 00 00       	call   450 <printf>
-  9b:	83 c4 10             	add    $0x10,%esp
-  9e:	eb 8c                	jmp    2c <main+0x2c>
+  72:	51                   	push   %ecx
+  73:	51                   	push   %ecx
+  74:	68 d0 07 00 00       	push   $0x7d0
+  79:	6a 01                	push   $0x1
+  7b:	e8 d0 03 00 00       	call   450 <printf>
+  80:	83 c4 10             	add    $0x10,%esp
+  83:	eb a7                	jmp    2c <main+0x2c>
+        printf(1, "Invalid pid\n");
+  85:	50                   	push   %eax
+  86:	50                   	push   %eax
+  87:	68 28 08 00 00       	push   $0x828
+  8c:	6a 01                	push   $0x1
+  8e:	e8 bd 03 00 00       	call   450 <printf>
+  93:	83 c4 10             	add    $0x10,%esp
+  96:	eb 94                	jmp    2c <main+0x2c>
+  98:	66 90                	xchg   %ax,%ax
+  9a:	66 90                	xchg   %ax,%ax
+  9c:	66 90                	xchg   %ax,%ax
+  9e:	66 90                	xchg   %ax,%ax
 
 000000a0 <strcpy>:
 #include "user.h"
@@ -996,7 +993,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 621:	a1 fc 0a 00 00       	mov    0xafc,%eax
+ 621:	a1 e8 0a 00 00       	mov    0xae8,%eax
 {
  626:	89 e5                	mov    %esp,%ebp
  628:	57                   	push   %edi
@@ -1037,7 +1034,7 @@ free(void *ap)
     p->s.ptr = bp;
  65d:	89 08                	mov    %ecx,(%eax)
   freep = p;
- 65f:	a3 fc 0a 00 00       	mov    %eax,0xafc
+ 65f:	a3 e8 0a 00 00       	mov    %eax,0xae8
 }
  664:	5b                   	pop    %ebx
  665:	5e                   	pop    %esi
@@ -1069,7 +1066,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  697:	03 53 fc             	add    -0x4(%ebx),%edx
   freep = p;
- 69a:	a3 fc 0a 00 00       	mov    %eax,0xafc
+ 69a:	a3 e8 0a 00 00       	mov    %eax,0xae8
     p->s.size += bp->s.size;
  69f:	89 50 04             	mov    %edx,0x4(%eax)
     p->s.ptr = bp->s.ptr;
@@ -1102,7 +1099,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  6b9:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- 6bc:	8b 15 fc 0a 00 00    	mov    0xafc,%edx
+ 6bc:	8b 15 e8 0a 00 00    	mov    0xae8,%edx
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  6c2:	8d 78 07             	lea    0x7(%eax),%edi
  6c5:	c1 ef 03             	shr    $0x3,%edi
@@ -1139,7 +1136,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- 701:	39 05 fc 0a 00 00    	cmp    %eax,0xafc
+ 701:	39 05 e8 0a 00 00    	cmp    %eax,0xae8
  707:	89 c2                	mov    %eax,%edx
  709:	75 ed                	jne    6f8 <malloc+0x48>
   p = sbrk(nu * sizeof(Header));
@@ -1158,7 +1155,7 @@ malloc(uint nbytes)
  725:	50                   	push   %eax
  726:	e8 f5 fe ff ff       	call   620 <free>
   return freep;
- 72b:	8b 15 fc 0a 00 00    	mov    0xafc,%edx
+ 72b:	8b 15 e8 0a 00 00    	mov    0xae8,%edx
       if((p = morecore(nunits)) == 0)
  731:	83 c4 10             	add    $0x10,%esp
  734:	85 d2                	test   %edx,%edx
@@ -1187,7 +1184,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  754:	89 78 04             	mov    %edi,0x4(%eax)
       freep = prevp;
- 757:	89 15 fc 0a 00 00    	mov    %edx,0xafc
+ 757:	89 15 e8 0a 00 00    	mov    %edx,0xae8
 }
  75d:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1201,13 +1198,13 @@ malloc(uint nbytes)
  768:	90                   	nop
  769:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
     base.s.ptr = freep = prevp = &base;
- 770:	c7 05 fc 0a 00 00 00 	movl   $0xb00,0xafc
- 777:	0b 00 00 
- 77a:	c7 05 00 0b 00 00 00 	movl   $0xb00,0xb00
- 781:	0b 00 00 
+ 770:	c7 05 e8 0a 00 00 ec 	movl   $0xaec,0xae8
+ 777:	0a 00 00 
+ 77a:	c7 05 ec 0a 00 00 ec 	movl   $0xaec,0xaec
+ 781:	0a 00 00 
     base.s.size = 0;
- 784:	b8 00 0b 00 00       	mov    $0xb00,%eax
- 789:	c7 05 04 0b 00 00 00 	movl   $0x0,0xb04
+ 784:	b8 ec 0a 00 00       	mov    $0xaec,%eax
+ 789:	c7 05 f0 0a 00 00 00 	movl   $0x0,0xaf0
  790:	00 00 00 
  793:	e9 44 ff ff ff       	jmp    6dc <malloc+0x2c>
  798:	90                   	nop

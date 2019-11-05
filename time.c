@@ -5,7 +5,10 @@
 
 int main(int argc, char *argv[])
 {
+  
+  int wtime, rtime;
   int pid = fork();
+  int success = 1;
 
   if(pid < 0)
   {
@@ -21,17 +24,21 @@ int main(int argc, char *argv[])
     argv[argc-1] = 0;
 
     exec(argv[0], argv);
+
+    success = 0;
     printf(1, "exec: fail\n");
   }
 
   else
   {
-    int wtime, rtime;
     // printf(1, "******time.c  %d*******\n", pid);
     waitx(&wtime, &rtime);
-
-    printf(1, "rtime = %d, wtime = %d\n", rtime, wtime);
-
-    exit();
   }
+
+  if(success)
+  {
+    printf(1, "rtime = %d, wtime = %d\n", rtime, wtime);
+  }
+  
+  exit();
 }

@@ -38,12 +38,12 @@ main(void)
   dup(0);  // stderr
   33:	c7 04 24 00 00 00 00 	movl   $0x0,(%esp)
   3a:	e8 7b 03 00 00       	call   3ba <dup>
-  #ifdef FCFS
-    printf(1, "First Come First Serve Scheduling Policy\n");
+  #ifdef ROUND_ROBIN
+    printf(1, "Round Robin Scheduling Policy\n");
 
   #else
-  #ifdef PBS
-    printf(1, "Priority Based Scheduling Policy\n");
+  #ifdef FCFS
+    printf(1, "First Come First Serve Scheduling Policy\n");
   3f:	58                   	pop    %eax
   40:	5a                   	pop    %edx
   41:	68 48 08 00 00       	push   $0x848
@@ -103,7 +103,7 @@ main(void)
       exec("sh", argv);
   a4:	50                   	push   %eax
   a5:	50                   	push   %eax
-  a6:	68 1c 0b 00 00       	push   $0xb1c
+  a6:	68 24 0b 00 00       	push   $0xb24
   ab:	68 26 08 00 00       	push   $0x826
   b0:	e8 c5 02 00 00       	call   37a <exec>
       printf(1, "init: exec sh failed\n");
@@ -717,7 +717,7 @@ printint(int fd, int xx, int base, int sgn)
  432:	31 d2                	xor    %edx,%edx
  434:	8d 7e 01             	lea    0x1(%esi),%edi
  437:	f7 f1                	div    %ecx
- 439:	0f b6 92 74 08 00 00 	movzbl 0x874(%edx),%edx
+ 439:	0f b6 92 7c 08 00 00 	movzbl 0x87c(%edx),%edx
   }while((x /= base) != 0);
  440:	85 c0                	test   %eax,%eax
     buf[i++] = digits[x % base];
@@ -1008,7 +1008,7 @@ printf(int fd, const char *fmt, ...)
  652:	31 ff                	xor    %edi,%edi
  654:	e9 8f fe ff ff       	jmp    4e8 <printf+0x48>
           s = "(null)";
- 659:	bb 6c 08 00 00       	mov    $0x86c,%ebx
+ 659:	bb 74 08 00 00       	mov    $0x874,%ebx
         while(*s != 0){
  65e:	b8 28 00 00 00       	mov    $0x28,%eax
  663:	e9 72 ff ff ff       	jmp    5da <printf+0x13a>
@@ -1029,7 +1029,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 671:	a1 24 0b 00 00       	mov    0xb24,%eax
+ 671:	a1 2c 0b 00 00       	mov    0xb2c,%eax
 {
  676:	89 e5                	mov    %esp,%ebp
  678:	57                   	push   %edi
@@ -1070,7 +1070,7 @@ free(void *ap)
     p->s.ptr = bp;
  6ad:	89 08                	mov    %ecx,(%eax)
   freep = p;
- 6af:	a3 24 0b 00 00       	mov    %eax,0xb24
+ 6af:	a3 2c 0b 00 00       	mov    %eax,0xb2c
 }
  6b4:	5b                   	pop    %ebx
  6b5:	5e                   	pop    %esi
@@ -1102,7 +1102,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  6e7:	03 53 fc             	add    -0x4(%ebx),%edx
   freep = p;
- 6ea:	a3 24 0b 00 00       	mov    %eax,0xb24
+ 6ea:	a3 2c 0b 00 00       	mov    %eax,0xb2c
     p->s.size += bp->s.size;
  6ef:	89 50 04             	mov    %edx,0x4(%eax)
     p->s.ptr = bp->s.ptr;
@@ -1135,7 +1135,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  709:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- 70c:	8b 15 24 0b 00 00    	mov    0xb24,%edx
+ 70c:	8b 15 2c 0b 00 00    	mov    0xb2c,%edx
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  712:	8d 78 07             	lea    0x7(%eax),%edi
  715:	c1 ef 03             	shr    $0x3,%edi
@@ -1172,7 +1172,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- 751:	39 05 24 0b 00 00    	cmp    %eax,0xb24
+ 751:	39 05 2c 0b 00 00    	cmp    %eax,0xb2c
  757:	89 c2                	mov    %eax,%edx
  759:	75 ed                	jne    748 <malloc+0x48>
   p = sbrk(nu * sizeof(Header));
@@ -1191,7 +1191,7 @@ malloc(uint nbytes)
  775:	50                   	push   %eax
  776:	e8 f5 fe ff ff       	call   670 <free>
   return freep;
- 77b:	8b 15 24 0b 00 00    	mov    0xb24,%edx
+ 77b:	8b 15 2c 0b 00 00    	mov    0xb2c,%edx
       if((p = morecore(nunits)) == 0)
  781:	83 c4 10             	add    $0x10,%esp
  784:	85 d2                	test   %edx,%edx
@@ -1220,7 +1220,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  7a4:	89 78 04             	mov    %edi,0x4(%eax)
       freep = prevp;
- 7a7:	89 15 24 0b 00 00    	mov    %edx,0xb24
+ 7a7:	89 15 2c 0b 00 00    	mov    %edx,0xb2c
 }
  7ad:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1234,13 +1234,13 @@ malloc(uint nbytes)
  7b8:	90                   	nop
  7b9:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
     base.s.ptr = freep = prevp = &base;
- 7c0:	c7 05 24 0b 00 00 28 	movl   $0xb28,0xb24
+ 7c0:	c7 05 2c 0b 00 00 30 	movl   $0xb30,0xb2c
  7c7:	0b 00 00 
- 7ca:	c7 05 28 0b 00 00 28 	movl   $0xb28,0xb28
+ 7ca:	c7 05 30 0b 00 00 30 	movl   $0xb30,0xb30
  7d1:	0b 00 00 
     base.s.size = 0;
- 7d4:	b8 28 0b 00 00       	mov    $0xb28,%eax
- 7d9:	c7 05 2c 0b 00 00 00 	movl   $0x0,0xb2c
+ 7d4:	b8 30 0b 00 00       	mov    $0xb30,%eax
+ 7d9:	c7 05 34 0b 00 00 00 	movl   $0x0,0xb34
  7e0:	00 00 00 
  7e3:	e9 44 ff ff ff       	jmp    72c <malloc+0x2c>
  7e8:	90                   	nop
