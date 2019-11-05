@@ -376,7 +376,7 @@ set_priority(int pid, int priority)
   acquire(&ptable.lock);
 
   int old_priority = -1;
-  
+
   struct proc* p;
   for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
@@ -497,7 +497,7 @@ scheduler(void)
 
     if(proc_with_highest_priority != 0)
     {
-      cprintf("Core = %d, pid = %d\n", c -> apicid, proc_with_min_start_time -> pid);
+      cprintf("Core = %d, pid = %d\n", c -> apicid, proc_with_highest_priority -> pid);
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
