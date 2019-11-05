@@ -5,28 +5,26 @@
 
 int main(int argc, char *argv[])
 {
-  for(int i = 0; i < 4; i++)
+  for(int i = 0; i < 6; i++)
   {
     int pid = fork();
 
     if(pid == 0)
     {
-      for(int j = 0; j < 1000; j++)
+      for(int j = 0; j < 1000000; j++)
       {
-        int x = (456 + 56/7)%10;
+        int x = ((456 + 56/7)%10)%97;
         x*=2;
-        x>>=1;
+        x/=2;
+        // sleep(0.25);
       }
     }
-
-    // else
-    // {
-    //   wait();
-    // }
   }
 
   for(int i = 0; i < 4; i++)
   {
     wait();
   }
+
+  exit();
 }
