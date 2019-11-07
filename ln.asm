@@ -576,19 +576,19 @@ SYSCALL(uptime)
  351:	c3                   	ret    
 
 00000352 <waitx>:
-SYSCALL(waitx)  # Assignment
+SYSCALL(waitx)
  352:	b8 16 00 00 00       	mov    $0x16,%eax
  357:	cd 40                	int    $0x40
  359:	c3                   	ret    
 
 0000035a <set_priority>:
-SYSCALL(set_priority)   # Assignment
+SYSCALL(set_priority)
  35a:	b8 17 00 00 00       	mov    $0x17,%eax
  35f:	cd 40                	int    $0x40
  361:	c3                   	ret    
 
 00000362 <getpinfo>:
-SYSCALL(getpinfo)   # Assignment
+SYSCALL(getpinfo)
  362:	b8 18 00 00 00       	mov    $0x18,%eax
  367:	cd 40                	int    $0x40
  369:	c3                   	ret    

@@ -55,7 +55,7 @@ trap(struct trapframe *tf)
       modify_times();
       
       wakeup(&ticks);
-      release(&tickslock);      
+      release(&tickslock);
     }
     lapiceoi();
     break;
@@ -66,7 +66,7 @@ trap(struct trapframe *tf)
   case T_IRQ0 + IRQ_IDE+1:
     // Bochs generates spurious IDE1 interrupts.
     break;
-  case T_IRQ0 + IRQ_KBD:  
+  case T_IRQ0 + IRQ_KBD:
     kbdintr();
     lapiceoi();
     break;
@@ -103,27 +103,53 @@ trap(struct trapframe *tf)
   if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
     exit();
 
+  // Force process to give up CPU on clock tick.
+  // If interrupts were on while locks held, would need to check nlock.
   #ifndef FCFS
 
-    #ifndef MLFQ
-    
-    // Force process to give up CPU on clock tick.
-    // If interrupts were on while locks held, would need to check nlock.
-    if(myproc() && myproc()->state == RUNNING &&
-       tf->trapno == T_IRQ0+IRQ_TIMER)
-      yield();
-
-    #else
-    if(myproc() && myproc()->state == RUNNING && myproc() -> queueNo != 4 && myproc() -> cur_time < ticksQ[myproc() -> queueNo])
+    #ifdef ROUND_ROBIN
+    if(myproc() && myproc()->state == RUNNING && tf->trapno == T_IRQ0+IRQ_TIMER)
     {
       yield();
     }
 
+    #else
+    #ifdef MLFQ
+
+    if(myproc() && myproc()->state == RUNNING && myproc() -> queueNo != 4 && myproc() -> cur_time > ticksQ[myproc() -> queueNo])
+    {
+      yield();
+    }
+
+    #else
+
+    if(myproc() && myproc()->state == RUNNING)
+    {
+      if(tf->trapno == T_IRQ0+IRQ_TIMER)
+      {
+        if(checkPremption(myproc() -> priority, 1))
+        {
+          yield();
+        }
+      }
+
+      else
+      {
+        if(checkPremption(myproc() -> priority, 0))
+        {
+          yield();
+        }
+      }
+
+      // yield();
+    }
+
+    #endif
     #endif
 
     // Check if the process has been killed since we yielded
     if(myproc() && myproc()->killed && (tf->cs&3) == DPL_USER)
       exit();
-
+  
   #endif
 }

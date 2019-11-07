@@ -24,7 +24,7 @@ main(void)
     sz[i] = 0;
     ticksQ[i] = (1 << i);
   }
-
+  
   kinit1(end, P2V(4*1024*1024)); // phys page allocator
   kvmalloc();      // kernel page table
   mpinit();        // detect other processors

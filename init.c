@@ -20,25 +20,25 @@ main(void)
   dup(0);  // stderr
 
   #ifdef ROUND_ROBIN
-    printf(1, "Round Robin Scheduling Policy\n");
-
+  printf(1, "Round Robin Scheduling Policy\n");
+  
   #else
   #ifdef FCFS
-    printf(1, "First Come First Serve Scheduling Policy\n");
-
+  printf(1, "First Come First Serve Scheduling Policy\n");
+  
   #else
   #ifdef PBS
-    printf(1, "Priority Based Scheduling Policy\n");
-
+  printf(1, "Priority Based Scheduling Policy\n");
+  
   #else
   #ifdef MLFQ
-    printf(1, "Multi Level Feedback Queue Scheduling Policy\n");
-
+  printf(1, "Multi Level Feedback Queue Scheduling Policy\n");
+  
+  #endif
+  #endif 
   #endif
   #endif
-  #endif
-  #endif
-
+  
   for(;;){
     printf(1, "init: starting sh\n");
     pid = fork();

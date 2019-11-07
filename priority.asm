@@ -614,19 +614,19 @@ SYSCALL(uptime)
  391:	c3                   	ret    
 
 00000392 <waitx>:
-SYSCALL(waitx)  # Assignment
+SYSCALL(waitx)
  392:	b8 16 00 00 00       	mov    $0x16,%eax
  397:	cd 40                	int    $0x40
  399:	c3                   	ret    
 
 0000039a <set_priority>:
-SYSCALL(set_priority)   # Assignment
+SYSCALL(set_priority)
  39a:	b8 17 00 00 00       	mov    $0x17,%eax
  39f:	cd 40                	int    $0x40
  3a1:	c3                   	ret    
 
 000003a2 <getpinfo>:
-SYSCALL(getpinfo)   # Assignment
+SYSCALL(getpinfo)
  3a2:	b8 18 00 00 00       	mov    $0x18,%eax
  3a7:	cd 40                	int    $0x40
  3a9:	c3                   	ret    
@@ -995,7 +995,7 @@ free(void *ap)
 
   bp = (Header*)ap - 1;
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 621:	a1 e8 0a 00 00       	mov    0xae8,%eax
+ 621:	a1 00 0b 00 00       	mov    0xb00,%eax
 {
  626:	89 e5                	mov    %esp,%ebp
  628:	57                   	push   %edi
@@ -1036,7 +1036,7 @@ free(void *ap)
     p->s.ptr = bp;
  65d:	89 08                	mov    %ecx,(%eax)
   freep = p;
- 65f:	a3 e8 0a 00 00       	mov    %eax,0xae8
+ 65f:	a3 00 0b 00 00       	mov    %eax,0xb00
 }
  664:	5b                   	pop    %ebx
  665:	5e                   	pop    %esi
@@ -1068,7 +1068,7 @@ free(void *ap)
     p->s.size += bp->s.size;
  697:	03 53 fc             	add    -0x4(%ebx),%edx
   freep = p;
- 69a:	a3 e8 0a 00 00       	mov    %eax,0xae8
+ 69a:	a3 00 0b 00 00       	mov    %eax,0xb00
     p->s.size += bp->s.size;
  69f:	89 50 04             	mov    %edx,0x4(%eax)
     p->s.ptr = bp->s.ptr;
@@ -1101,7 +1101,7 @@ malloc(uint nbytes)
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  6b9:	8b 45 08             	mov    0x8(%ebp),%eax
   if((prevp = freep) == 0){
- 6bc:	8b 15 e8 0a 00 00    	mov    0xae8,%edx
+ 6bc:	8b 15 00 0b 00 00    	mov    0xb00,%edx
   nunits = (nbytes + sizeof(Header) - 1)/sizeof(Header) + 1;
  6c2:	8d 78 07             	lea    0x7(%eax),%edi
  6c5:	c1 ef 03             	shr    $0x3,%edi
@@ -1138,7 +1138,7 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- 701:	39 05 e8 0a 00 00    	cmp    %eax,0xae8
+ 701:	39 05 00 0b 00 00    	cmp    %eax,0xb00
  707:	89 c2                	mov    %eax,%edx
  709:	75 ed                	jne    6f8 <malloc+0x48>
   p = sbrk(nu * sizeof(Header));
@@ -1157,7 +1157,7 @@ malloc(uint nbytes)
  725:	50                   	push   %eax
  726:	e8 f5 fe ff ff       	call   620 <free>
   return freep;
- 72b:	8b 15 e8 0a 00 00    	mov    0xae8,%edx
+ 72b:	8b 15 00 0b 00 00    	mov    0xb00,%edx
       if((p = morecore(nunits)) == 0)
  731:	83 c4 10             	add    $0x10,%esp
  734:	85 d2                	test   %edx,%edx
@@ -1186,7 +1186,7 @@ malloc(uint nbytes)
         p->s.size = nunits;
  754:	89 78 04             	mov    %edi,0x4(%eax)
       freep = prevp;
- 757:	89 15 e8 0a 00 00    	mov    %edx,0xae8
+ 757:	89 15 00 0b 00 00    	mov    %edx,0xb00
 }
  75d:	8d 65 f4             	lea    -0xc(%ebp),%esp
       return (void*)(p + 1);
@@ -1200,13 +1200,13 @@ malloc(uint nbytes)
  768:	90                   	nop
  769:	8d b4 26 00 00 00 00 	lea    0x0(%esi,%eiz,1),%esi
     base.s.ptr = freep = prevp = &base;
- 770:	c7 05 e8 0a 00 00 ec 	movl   $0xaec,0xae8
- 777:	0a 00 00 
- 77a:	c7 05 ec 0a 00 00 ec 	movl   $0xaec,0xaec
- 781:	0a 00 00 
+ 770:	c7 05 00 0b 00 00 04 	movl   $0xb04,0xb00
+ 777:	0b 00 00 
+ 77a:	c7 05 04 0b 00 00 04 	movl   $0xb04,0xb04
+ 781:	0b 00 00 
     base.s.size = 0;
- 784:	b8 ec 0a 00 00       	mov    $0xaec,%eax
- 789:	c7 05 f0 0a 00 00 00 	movl   $0x0,0xaf0
+ 784:	b8 04 0b 00 00       	mov    $0xb04,%eax
+ 789:	c7 05 08 0b 00 00 00 	movl   $0x0,0xb08
  790:	00 00 00 
  793:	e9 44 ff ff ff       	jmp    6dc <malloc+0x2c>
  798:	90                   	nop

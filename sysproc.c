@@ -27,24 +27,6 @@ sys_wait(void)
   return wait();
 }
 
-// Assignment
-int sys_waitx(void)
-{
-  int *wtime, *rtime;
-
-  if(argptr(0, (char **)&wtime, sizeof(int)) < 0)
-  {
-    return -1;
-  }
-
-  if(argptr(1, (char **)&rtime, sizeof(int)) < 0)
-  {
-    return -1;
-  }
-
-  return waitx(wtime, rtime);
-}
-
 int
 sys_kill(void)
 {
@@ -109,33 +91,56 @@ sys_uptime(void)
   return xticks;
 }
 
+// Assignment
+int sys_waitx(void)
+{
+  int *wtime, *rtime;
+
+  if(argptr(0, (char **)&wtime, sizeof(int)) < 0)
+  {
+    return -1;
+  }
+
+  if(argptr(1, (char **)&rtime, sizeof(int)) < 0)
+  {
+    return -1;
+  }
+
+  return waitx(wtime, rtime);
+}
+
 int sys_set_priority(void)
 {
-  int pid, priority;
+  int new_priority;
+  int pid;
 
   if(argint(0, &pid) < 0)
+  {
     return -1;
+  }
 
-  if(argint(1, &priority) < 0)
+  if(argint(1, &new_priority) < 0)
+  {
     return -1;
+  }
 
-  return set_priority(pid, priority);
+  return set_priority(pid, new_priority);
 }
 
 int sys_getpinfo(void)
 {
-  int pid;
-  if(argint(0, &pid) < 0)
-  {
-    return -1;
-  }
+    int pid;
+    struct proc_stat* stat;
 
-  struct proc_stat* stat;
-  if(argptr(1, (char**)&stat, sizeof(struct proc_stat)) < 0)
-  {
-    return -1;
-  }
+    if(argint(0, &pid) < 0)
+    {
+        return -1;
+    }
 
-  return getpinfo(pid, stat);
-
+    if(argptr(1, (char**)&stat, sizeof(struct proc_stat)) < 0)
+    {
+        return -1;
+    }
+    
+    return getpinfo(pid, stat);
 }

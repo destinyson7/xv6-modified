@@ -49,18 +49,18 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
-
-  int start_time; // Assignment
-  int end_time; // Assignment
-  int run_time; // Assignment
-  int wait_time; // Assignment
-
-  int priority; // Assignment
-
-  int queueNo;
-  int ticks[5];
-  int num_run;
-  int cur_time;
+  
+  int start_time;              // Assignment
+  int end_time;                // Assignment
+  int run_time;                // Assignment
+  int wait_time;               // Assignment
+  
+  int priority;                // Assignment
+  
+  int num_run;                 // Assignment
+  int cur_time;                // Assignment
+  int ticks[5];                // Assignment
+  int queueNo;                 // Assignment
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -69,17 +69,6 @@ struct proc {
 //   fixed-size stack
 //   expandable heap
 
-void modify_times(); // Assignment
+void modify_times(void);
 
-#define AGE 10
-
-int front[5];
-int rear[5];
-int sz[5];
-struct proc* queue[5][NPROC];
-int ticksQ[5];
-
-int isEmpty(int);
-int isFull(int);
-void push(int, struct proc*);
-struct proc* pop(int);
+int checkPremption(int, int);            

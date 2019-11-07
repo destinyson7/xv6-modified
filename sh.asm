@@ -1958,19 +1958,19 @@ SYSCALL(uptime)
      db1:	c3                   	ret    
 
 00000db2 <waitx>:
-SYSCALL(waitx)  # Assignment
+SYSCALL(waitx)
      db2:	b8 16 00 00 00       	mov    $0x16,%eax
      db7:	cd 40                	int    $0x40
      db9:	c3                   	ret    
 
 00000dba <set_priority>:
-SYSCALL(set_priority)   # Assignment
+SYSCALL(set_priority)
      dba:	b8 17 00 00 00       	mov    $0x17,%eax
      dbf:	cd 40                	int    $0x40
      dc1:	c3                   	ret    
 
 00000dc2 <getpinfo>:
-SYSCALL(getpinfo)   # Assignment
+SYSCALL(getpinfo)
      dc2:	b8 18 00 00 00       	mov    $0x18,%eax
      dc7:	cd 40                	int    $0x40
      dc9:	c3                   	ret    

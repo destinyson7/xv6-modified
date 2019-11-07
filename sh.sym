@@ -12,14 +12,15 @@
 00000000 .debug_loc
 00000000 .debug_ranges
 00000000 sh.c
-000018a0 buf.1086
+000018a0 buf.1101
 00000000 ulib.c
 00000000 printf.c
 00000dd0 printint
-000012b8 digits.1048
+000012b8 digits.1063
 00000000 umalloc.c
 00001904 freep
 00001908 base
+00001920 rear
 00000ac0 strcpy
 00000e70 printf
 00000ce0 memmove
@@ -28,6 +29,7 @@
 00000330 execcmd
 00000bd0 gets
 00000d92 getpid
+00001934 ticksQ
 00000800 parsepipe
 00000a50 parsecmd
 00000430 backcmd
@@ -35,6 +37,7 @@
 00000640 parseredirs
 00000460 gettoken
 000010d0 malloc
+00001960 queue
 00000da2 sleep
 0000187c whitespace
 00000dc2 getpinfo
@@ -42,6 +45,7 @@
 00000310 fork1
 000009a0 nulterminate
 00000d22 pipe
+00001e60 front
 00000100 getcmd
 00000d32 write
 00000d6a fstat
@@ -52,6 +56,7 @@
 00000910 parseblock
 00000d4a exec
 00000d1a wait
+00001e74 sz
 00001874 symbols
 00000d2a read
 000006f0 parseexec
@@ -69,7 +74,7 @@
 00000360 redircmd
 00000c50 stat
 00001882 _edata
-00001910 _end
+00001e88 _end
 00000d72 link
 00000d12 exit
 00000ca0 atoi

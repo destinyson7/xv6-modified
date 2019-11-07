@@ -29,6 +29,6 @@ SYSCALL(getpid)
 SYSCALL(sbrk)
 SYSCALL(sleep)
 SYSCALL(uptime)
-SYSCALL(waitx)  # Assignment
-SYSCALL(set_priority)   # Assignment
-SYSCALL(getpinfo)   # Assignment
+SYSCALL(waitx)
+SYSCALL(set_priority)
+SYSCALL(getpinfo)

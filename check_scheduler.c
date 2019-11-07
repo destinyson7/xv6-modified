@@ -9,30 +9,26 @@ int main(int argc, char *argv[])
   {
     int pid = fork();
 
-    if(pid < 0)
+    if(pid == 0)
     {
-      printf(1, "init: fork failed\n");
+      for(int j = 0; j < 1000; j++)
+      {
+        int x = (456 + 56/7)%10;
+        x*=2;
+        x>>=1;
+      }
       exit();
     }
 
-    if(pid == 0)
-    {
-      for(int j = 0; j < 1000000; j++)
-      {
-        int x = ((456 + 56/7)%10)%97;
-        x*=2;
-        x/=2;
-        // sleep(0.25);
-      }
-      
-      exit();
-    }
+    // else
+    // {
+    //   wait();
+    // }
   }
 
   for(int i = 0; i < 100; i++)
   {
     wait();
   }
-
   exit();
 }
