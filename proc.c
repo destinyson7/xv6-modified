@@ -95,8 +95,9 @@ found:
   p -> run_time = 0;                               
   p -> wait_time = 0;                           
   
+  // p -> priority = (p -> pid)/2;
   p -> priority = 60;
-  
+
   p -> queueNo = 0;
   p -> cur_time = 0;
   p -> num_run = 0;
@@ -531,6 +532,8 @@ scheduler(void)
         switchuvm(p);
         p->state = RUNNING;
 
+        cprintf("Process %d is running\n", p -> pid);
+
         swtch(&(c->scheduler), p->context);
         switchkvm();
 
@@ -591,7 +594,7 @@ scheduler(void)
       c -> proc = p;
       switchuvm(p);
       
-      // cprintf("pid=%d; queue=%d; runtime=%d; wait_time=%d; size=%d\n", p -> pid, p -> queueNo, p -> run_time, p -> wait_time, sz[p -> queueNo]);
+      cprintf("pid=%d; queue=%d; runtime=%d; wait_time=%d; size=%d\n", p -> pid, p -> queueNo, p -> run_time, p -> wait_time, sz[p -> queueNo]);
       
       p -> state = RUNNING;
 
@@ -658,7 +661,7 @@ yield(void)
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
   
-  // cprintf("Yield called during process %d\n", myproc() -> pid);
+  cprintf("Prempting process %d\n", myproc() -> pid);
   
   #ifdef MLFQ
   
@@ -846,7 +849,7 @@ void modify_times(void)
       
       if(p -> queueNo != 0 && p -> wait_time > AGE) 
       {
-        // cprintf("Aging for process %d\n", p -> pid);
+        cprintf("Aging for process %d\n", p -> pid);
 
         p -> queueNo--;
         p -> cur_time = 0;
@@ -1038,7 +1041,7 @@ int checkPremption(int priority, int f)
         // {
         //   cprintf("%d process with higher priority %d than %d found\n", p -> pid, p -> priority, priority);
         // }
-        
+
         release(&ptable.lock);
         return 1;
       }
