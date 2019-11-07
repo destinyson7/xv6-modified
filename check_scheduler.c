@@ -9,6 +9,12 @@ int main(int argc, char *argv[])
   {
     int pid = fork();
 
+    if(pid < 0)
+    {
+      printf(1, "init: fork failed\n");
+      exit();
+    }
+
     if(pid == 0)
     {
       for(int j = 0; j < 1000000; j++)

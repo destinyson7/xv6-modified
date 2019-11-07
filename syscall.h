@@ -22,3 +22,4 @@
 #define SYS_close  21
 #define SYS_waitx  22           // Assignment
 #define SYS_set_priority  23    // Assignment
+#define SYS_getpinfo  24        // Assignment

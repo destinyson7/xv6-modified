@@ -30,6 +30,11 @@ main(void)
   #ifdef PBS
     printf(1, "Priority Based Scheduling Policy\n");
 
+  #else
+  #ifdef MLFQ
+    printf(1, "Multi Level Feedback Queue Scheduling Policy\n");
+
+  #endif
   #endif
   #endif
   #endif

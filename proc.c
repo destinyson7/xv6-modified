@@ -6,6 +6,7 @@
 #include "x86.h"
 #include "proc.h"
 #include "spinlock.h"
+#include "proc_stat.h"
 
 struct {
   struct spinlock lock;
@@ -92,9 +93,32 @@ found:
   p -> start_time = ticks;  // Assignment
   p -> end_time = 0;        // Assignment
   p -> run_time = 0;        // Assignment
-  p -> sleep_time = 0;      // Assignment
+  p -> wait_time = 0;      // Assignment
 
   p -> priority = 60;       // Assignment
+
+  for(int i = 0; i < 5; i++)
+  {
+    p -> ticks[i] = 0;
+  }
+
+  p -> num_run = 0;
+  p -> cur_time = 0;
+  p -> queueNo = 0;
+
+  for(int i = 0; i < 5; i++)
+  {
+    if(isFull(i))
+    {
+      continue;
+    }
+
+    else
+    {
+      push(i, p);
+      break;
+    }
+  }
 
   release(&ptable.lock);
 
@@ -268,10 +292,10 @@ exit(void)
     }
   }
   
-  curproc -> end_time = ticks;  // Assignment
 
   // Jump into the scheduler, never to return.
   curproc->state = ZOMBIE;
+  curproc -> end_time = ticks;  // Assignment
 
   sched();
   panic("zombie exit");
@@ -351,7 +375,7 @@ waitx(int* wtime, int* rtime)
         // cprintf("%d ** %d ** %d ** %d ** %d ** %d\n", p->end_time, p->start_time, p->run_time, p->sleep_time, *rtime, *wtime);
         *rtime = p->run_time; // Assignment
         // cprintf("%d ** %d ** %d ** %d ** %d ** %d\n", p->end_time, p->start_time, p->run_time, p->sleep_time, *rtime, *wtime);
-        *wtime = (p->end_time - p->start_time) - (p->run_time + p->sleep_time); // Assignment
+        *wtime = (p->end_time - p->start_time) - (p->run_time); // Assignment
         // cprintf("%d ** %d ** %d ** %d ** %d ** %d\n", p->end_time, p->start_time, p->run_time, p->sleep_time, *rtime, *wtime);
 
         release(&ptable.lock);
@@ -393,9 +417,6 @@ set_priority(int pid, int priority)
   return old_priority;
 }
 
-
-
-
 //PAGEBREAK: 42
 // Per-CPU process scheduler.
 // Each CPU calls scheduler() after setting itself up.
@@ -407,7 +428,7 @@ set_priority(int pid, int priority)
 void
 scheduler(void)
 {
-  struct proc *p;
+  struct proc *p = 0;
   struct cpu *c = mycpu();
   c->proc = 0;
   
@@ -513,6 +534,79 @@ scheduler(void)
       c->proc = 0;
     }
 
+    #else
+    #ifdef MLFQ
+
+    int f = 0;
+    
+    for(int i = 0; i < 5; i++)
+    {
+      if(f ==0 && (!isEmpty(i)))
+      {
+        int cursz = 0;
+
+        while(sz[i] > cursz)
+        {
+          p = pop(i);
+          cursz++;
+
+          if(p -> state != RUNNABLE)
+          {
+            push(i, p);
+          }
+
+          else
+          {
+            f = 1;
+            break;
+          }
+        }
+
+        if(f == 1)
+        {
+          break;
+        }
+      }
+    }
+
+    if(f && p -> state == RUNNABLE)
+    {
+      f = 0;
+
+      cprintf("Core = %d, pid = %d\n", c -> apicid, p -> pid);
+      
+      p -> wait_time = 0;
+      p -> num_run++;
+
+      c->proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
+
+      swtch(&(c->scheduler), p->context);
+      switchkvm();
+
+      // Process is done running for now.
+      // It should have changed its p->state before coming back.
+      c->proc = 0;
+      p = 0;
+    }
+
+    if(f == 0)
+    {
+      for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        if(p->state != RUNNABLE)
+          continue;
+
+        // Switch to chosen process.  It is the process's job
+        // to release ptable.lock and then reacquire it
+        // before jumping back to us.
+        
+        push(0, p);
+
+      }
+    }
+
+    #endif
     #endif
     #endif
     #endif
@@ -554,6 +648,15 @@ yield(void)
 {
   acquire(&ptable.lock);  //DOC: yieldlock
   myproc()->state = RUNNABLE;
+
+  #ifdef MLFQ
+
+  myproc() -> cur_time = 0;
+  myproc() -> queueNo++;
+  push(myproc() -> queueNo, myproc());
+
+  #endif
+
   sched();
   release(&ptable.lock);
 }
@@ -712,13 +815,155 @@ void modify_times()
       {
         // cprintf("$$$$$%d*$$$$$$\n", p->pid);
           p -> run_time++;
+
+          #ifdef MLFQ
+
+          p -> cur_time++;
+          p -> ticks[p -> queueNo]++;
+
+          #endif
       }
 
-      else if(p -> state == SLEEPING)
+      else
       {
-          p -> sleep_time++;
+          p -> wait_time++;
+
+          #ifdef MLFQ
+
+          // Check for Ageing
+          if(p -> queueNo != 0 && p -> wait_time > AGE)
+          {
+            p -> cur_time = 0;
+            p -> wait_time = 0;
+            p -> queueNo--;
+
+            push(p -> queueNo, p);
+          }
+
+          #endif
       }
     // } 
   } 
   release(&ptable.lock);
+}
+
+int getpinfo(int pid, struct proc_stat* pp)
+{
+  acquire(&ptable.lock);
+
+  struct proc* p;
+  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if(p -> pid == pid)
+    {
+      pp -> pid = p -> pid;
+      pp -> num_run = p -> num_run;
+      pp -> current_queue = p -> queueNo;
+      pp -> runtime = p -> run_time;
+
+      for(int i = 0; i < 5; i++)
+      {
+        pp -> ticks[i] = p -> ticks[i];
+      }
+
+      release(&ptable.lock);
+      return 1;
+    }
+  }
+
+  release(&ptable.lock);
+  return 0;
+}
+
+int isEmpty(int queueNo)
+{
+  if(front[queueNo] == -1)
+  {
+    return 1;
+  }
+
+  return 0;
+}
+
+int isFull(int queueNo)
+{
+  if((front[queueNo] == rear[queueNo]+1) || (front[queueNo] == 0 && rear[queueNo] == NPROC-1))
+  {
+    return 1;
+  }
+
+  return 0;
+}
+
+void push(int queueNo, struct proc* cur)
+{
+  // Check if the element to be pushed already exists in the queue
+  for(int i = 0; i < 5; i++)
+  {
+    if(front[i] > rear[i])
+    {
+      for(int j = 0; j < NPROC; j++)
+      {
+        if(j >= front[i] || j <= rear[i])
+        {
+          if(queue[i][j] == cur)
+          {
+            return;
+          }
+        }
+      }
+    }
+
+    else
+    {
+      for(int j = front[i]; j <= rear[i] && j >= 0; j++)
+      {
+        if(queue[i][j] == cur)
+        {
+          return;
+        }
+      }
+    }
+  }
+
+  if(isFull(queueNo))
+  {
+    cprintf("Error: Queue is Full\n");
+  }
+
+  else
+  {
+    cur -> cur_time = 0;
+    
+    if(front[queueNo] == -1)
+    {
+      front[queueNo] = 0;
+    }
+
+    rear[queueNo]++;
+    rear[queueNo]%=NPROC;
+    queue[queueNo][rear[queueNo]] = cur;
+    sz[queueNo]++;
+  }
+}
+
+struct proc* pop(int queueNo)
+{
+  struct proc* cur = queue[queueNo][front[queueNo]];
+
+  if(front[queueNo] == rear[queueNo])
+  {
+    front[queueNo] = -1;
+    rear[queueNo] = -1;
+  }
+
+  else
+  {
+    front[queueNo]++;
+    front[queueNo]%=NPROC;
+  }
+
+  sz[queueNo]--;
+
+  return cur;
 }

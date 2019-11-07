@@ -53,9 +53,14 @@ struct proc {
   int start_time; // Assignment
   int end_time; // Assignment
   int run_time; // Assignment
-  int sleep_time; // Assignment
+  int wait_time; // Assignment
 
   int priority; // Assignment
+
+  int queueNo;
+  int ticks[5];
+  int num_run;
+  int cur_time;
 };
 
 // Process memory is laid out contiguously, low addresses first:
@@ -65,3 +70,16 @@ struct proc {
 //   expandable heap
 
 void modify_times(); // Assignment
+
+#define AGE 10
+
+int front[5];
+int rear[5];
+int sz[5];
+struct proc* queue[5][NPROC];
+int ticksQ[5];
+
+int isEmpty(int);
+int isFull(int);
+void push(int, struct proc*);
+struct proc* pop(int);

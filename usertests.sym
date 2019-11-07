@@ -12,11 +12,11 @@
 00000000 .debug_loc
 00000000 .debug_ranges
 00000000 usertests.c
-00005e20 args.1408
+00005e20 args.1412
 00000000 ulib.c
 00000000 printf.c
 00003960 printint
-000054f8 digits.1044
+000054f8 digits.1048
 00000000 umalloc.c
 00005ea0 freep
 00005ea4 base
@@ -38,6 +38,7 @@
 00000200 exitiputtest
 00003380 fsfull
 00001be0 bigdir
+00003952 getpinfo
 0000394a set_priority
 00002c80 forktest
 00000660 writetest1

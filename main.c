@@ -17,6 +17,14 @@ extern char end[]; // first address after kernel loaded from ELF file
 int
 main(void)
 {
+  for(int i = 0; i < 5; i++)
+  {
+    front[i] = -1;
+    rear[i] = -1;
+    sz[i] = 0;
+    ticksQ[i] = (1 << i);
+  }
+
   kinit1(end, P2V(4*1024*1024)); // phys page allocator
   kvmalloc();      // kernel page table
   mpinit();        // detect other processors

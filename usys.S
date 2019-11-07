@@ -31,3 +31,4 @@ SYSCALL(sleep)
 SYSCALL(uptime)
 SYSCALL(waitx)  # Assignment
 SYSCALL(set_priority)   # Assignment
+SYSCALL(getpinfo)   # Assignment

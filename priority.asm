@@ -624,10 +624,12 @@ SYSCALL(set_priority)   # Assignment
  39a:	b8 17 00 00 00       	mov    $0x17,%eax
  39f:	cd 40                	int    $0x40
  3a1:	c3                   	ret    
- 3a2:	66 90                	xchg   %ax,%ax
- 3a4:	66 90                	xchg   %ax,%ax
- 3a6:	66 90                	xchg   %ax,%ax
- 3a8:	66 90                	xchg   %ax,%ax
+
+000003a2 <getpinfo>:
+SYSCALL(getpinfo)   # Assignment
+ 3a2:	b8 18 00 00 00       	mov    $0x18,%eax
+ 3a7:	cd 40                	int    $0x40
+ 3a9:	c3                   	ret    
  3aa:	66 90                	xchg   %ax,%ax
  3ac:	66 90                	xchg   %ax,%ax
  3ae:	66 90                	xchg   %ax,%ax

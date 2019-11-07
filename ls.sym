@@ -11,11 +11,11 @@
 00000000 .debug_loc
 00000000 .debug_ranges
 00000000 ls.c
-00000dac buf.1055
+00000dac buf.1059
 00000000 ulib.c
 00000000 printf.c
 00000640 printint
-00000a8c digits.1044
+00000a8c digits.1048
 00000000 umalloc.c
 00000dbc freep
 00000dc0 base
@@ -29,6 +29,7 @@
 00000602 getpid
 00000940 malloc
 00000612 sleep
+00000632 getpinfo
 0000062a set_priority
 00000592 pipe
 000005a2 write
