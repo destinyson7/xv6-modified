@@ -5,13 +5,13 @@
 
 int main(int argc, char *argv[])
 {
-  for(int i = 0; i < 100; i++)
+  for(int i = 0; i < 10; i++)
   {
     int pid = fork();
 
     if(pid == 0)
     {
-      for(int j = 0; j < 1000; j++)
+      for(int j = 0; j < (long long int)1e10; j++)
       {
         int x = (456 + 56/7)%10;
         x*=2;

@@ -427,6 +427,8 @@ scheduler(void)
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
 
+      cprintf("Running Process Pid = %d\n", p -> pid);
+
       c->proc = p;
       switchuvm(p);
       p->state = RUNNING;
