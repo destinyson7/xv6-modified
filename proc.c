@@ -473,7 +473,7 @@ scheduler(void)
 
     if(proc_with_min_start_time != 0)
     {
-      // cprintf("Core = %d, pid = %d\n", c -> apicid, proc_with_min_start_time -> pid);
+      cprintf("Core = %d, pid = %d\n", c -> apicid, proc_with_min_start_time -> pid);
       
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
